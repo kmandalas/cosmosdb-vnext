@@ -36,11 +36,11 @@ class DemoAuditRepositoryIntegrationTest extends AbstractIntegrationTest {
     void testFindAllByPrincipalAndTimestampGreaterThanEqualOrderByTimestampAsc() {
        var audits = demoAuditRepository.findAllByPrincipalAndTimestampGreaterThanEqualOrderByTimestampAsc("userA",
                Instant.now().minus(Duration.ofMinutes(1)));
-       assertThat(audits).hasSize(1);
+       assertThat(audits).hasSize(1); // works OK
 
         var auditsByTypes = demoAuditRepository.findAllByPrincipalAndTypeInAndTimestampGreaterThanEqualOrderByTimestampAsc("userA",
                 List.of("USER_ACTION_X", "USER_ACTION_Y"), Instant.now().minus(Duration.ofMinutes(1)));
-        assertThat(auditsByTypes).hasSize(1);
+        assertThat(auditsByTypes).hasSize(1); // fails, in general IN clause seems unsupported
     }
 
     // System.NotImplementedException: Have not implemented Patch on Document
