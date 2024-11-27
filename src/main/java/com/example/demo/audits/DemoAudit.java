@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Builder
@@ -27,5 +28,9 @@ public class DemoAudit {
     private final String type;
 
     private final Map<String, Object> data;
+
+    private final String subtype;
+
+    private List<String> eligibleEvents;
 
 }

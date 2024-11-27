@@ -2,6 +2,9 @@ package com.example.demo.common;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.utils.CosmosDBSSLHelper;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -15,6 +18,7 @@ import java.time.Duration;
 
 @SpringBootTest(classes = DemoApplication.class)
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
 
     @Container
