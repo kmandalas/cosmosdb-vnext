@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    azure:
+      cosmos:
+        database: vnext-demo-test
+        connection-mode: gateway # needs to be explicitly set for the tests
+        endpoint-discovery-enabled: false # needs to be explicitly set for the tests
