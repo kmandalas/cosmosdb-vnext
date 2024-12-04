@@ -23,6 +23,8 @@ public interface DemoAuditRepository extends CosmosRepository<DemoAudit, String>
     @Query("SELECT * FROM audits a where ARRAY_CONTAINS(a.eligibleEvents, @eligibleEventCode)")
     List<DemoAudit> findByPrincipalAndEligibleEventsContains(String principal, String eligibleEventCode);
 
+    List<DemoAudit> findAllByPrincipal(String principal);
+
     void deleteAllByPrincipalIn(List<String> principals);
 
 }

@@ -43,8 +43,6 @@ class DemoAuditRepositoryIntegrationTest extends AbstractIntegrationTest {
         assertThat(auditsByTypes).hasSize(1); // fails, in general IN clause seems unsupported
     }
 
-    // System.NotImplementedException: Have not implemented Patch on Document
-    // Expected to fail since Patch is not supported yet, src: https://learn.microsoft.com/en-us/azure/cosmos-db/emulator-linux#feature-support
     @Test
     void testPartialUpdateViaPatch() {
         var audits = demoAuditRepository.findAll();
@@ -52,6 +50,10 @@ class DemoAuditRepositoryIntegrationTest extends AbstractIntegrationTest {
 
         CosmosPatchOperations patchOperations = CosmosPatchOperations.create().replace("/type", "USER_ACTION_Z");
         demoAuditRepository.save(audits.get(0).getId(), new PartitionKey(audits.get(0).getPrincipal()), DemoAudit.class, patchOperations);
+
+        var patched = demoAuditRepository.findAllByPrincipal("userA");
+        assertThat(patched).hasSize(1);
+        assertThat(patched.get(0).getType()).isEqualTo("USER_ACTION_Z");
     }
 
     // com.azure.spring.data.cosmos.exception.CosmosAccessException: Failed to get count value
