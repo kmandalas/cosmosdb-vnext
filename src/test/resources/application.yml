@@ -5,3 +5,6 @@ spring:
         database: vnext-demo-test
         connection-mode: gateway # needs to be explicitly set for the tests
         endpoint-discovery-enabled: false # needs to be explicitly set for the tests
+
+logging.level.com.azure.data.cosmos: DEBUG
+logging.level.com.azure.cosmos.implementation.SqlQuerySpecLogger: DEBUG

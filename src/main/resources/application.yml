@@ -3,3 +3,7 @@ spring.cloud.azure.cosmos:
   key: C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
   database: vnext-demo
   populateQueryMetrics: false
+
+
+logging.level.com.azure.data.cosmos: DEBUG
+logging.level.com.azure.cosmos.implementation.SqlQuerySpecLogger: DEBUG

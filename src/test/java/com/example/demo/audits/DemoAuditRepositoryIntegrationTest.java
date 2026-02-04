@@ -4,7 +4,10 @@ import com.azure.cosmos.models.CosmosPatchOperations;
 import com.azure.cosmos.models.PartitionKey;
 import com.example.demo.common.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 
@@ -16,6 +19,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DemoAuditRepositoryIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -33,17 +37,21 @@ class DemoAuditRepositoryIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(1)
     void testFindAllByPrincipalAndTimestampGreaterThanEqualOrderByTimestampAsc() {
        var audits = demoAuditRepository.findAllByPrincipalAndTimestampGreaterThanEqualOrderByTimestampAsc("userA",
                Instant.now().minus(Duration.ofMinutes(1)));
        assertThat(audits).hasSize(1); // works OK
 
+        var auditTypes = demoAuditRepository.findAllByPrincipalAndTypeIn("userA",  List.of("USER_ACTION_X", "USER_ACTION_Y"));
+
         var auditsByTypes = demoAuditRepository.findAllByPrincipalAndTypeInAndTimestampGreaterThanEqualOrderByTimestampAsc("userA",
                 List.of("USER_ACTION_X", "USER_ACTION_Y"), Instant.now().minus(Duration.ofMinutes(1)));
-        assertThat(auditsByTypes).hasSize(1); // fails, in general IN clause seems unsupported
+        assertThat(auditsByTypes).hasSize(1);
     }
 
     @Test
+    @Order(5)
     void testPartialUpdateViaPatch() {
         var audits = demoAuditRepository.findAll();
         assertThat(audits).hasSize(1);
@@ -56,23 +64,23 @@ class DemoAuditRepositoryIntegrationTest extends AbstractIntegrationTest {
         assertThat(patched.get(0).getType()).isEqualTo("USER_ACTION_Z");
     }
 
-    // com.azure.spring.data.cosmos.exception.CosmosAccessException: Failed to get count value
-    // "innerErrorMessage":"Aggref found in non-Agg plan node,..."
+    // COUNT query executes but returns incorrect result (0 instead of actual count)
     @Test
+    @Order(2)
     void testFindWithExistsUsingCount() {
-        var result = demoAuditRepository.existsByPrincipalAndType("userA", "USER_ACTION_Z");
+        var result = demoAuditRepository.existsByPrincipalAndType("userA", "USER_ACTION_X");
         assertThat(result).isTrue();
     }
 
 
-    // System.NotSupportedException: Not supported function call ARRAY_CONTAINS with 2 arguments
     @Test
+    @Order(3)
     void testFindWithArrayContains() {
        demoAuditRepository.findByPrincipalAndEligibleEventsContains("userA", "101B");
     }
 
-    // System.NotSupportedException: Not supported function call IS_NULL with 1 arguments
     @Test
+    @Order(4)
     void testFindWithIsNull() {
         var audits = demoAuditRepository.findAllByPrincipalAndSubtypeIsNull("userA");
         assertThat(audits).hasSize(1);

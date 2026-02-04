@@ -16,6 +16,8 @@ public interface DemoAuditRepository extends CosmosRepository<DemoAudit, String>
 
 	List<DemoAudit> findAllByPrincipalAndTypeInAndTimestampGreaterThanEqualOrderByTimestampAsc(String principal, List<String> auditTypes, Instant instant);
 
+    List<DemoAudit> findAllByPrincipalAndTypeIn(String principal, List<String> types);
+
     boolean existsByPrincipalAndType(String principal, String auditType);
 
     List<DemoAudit> findAllByPrincipalAndSubtypeIsNull(String principal);
